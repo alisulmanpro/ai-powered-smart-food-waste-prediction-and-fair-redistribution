@@ -1,0 +1,73 @@
+# Development stack.
+#   docker compose up --build                  -> Postgres + FastAPI backend (hot reload)
+#   docker compose --profile admin up --build  -> ... + React admin panel (hot reload)
+# Values come from the root .env file (copy .env.example); every variable has a default.
+
+name: foodwaste
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-foodwaste}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-foodwaste}
+      POSTGRES_DB: ${POSTGRES_DB:-foodwaste}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-foodwaste} -d ${POSTGRES_DB:-foodwaste}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      target: dev
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ENVIRONMENT: development
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-foodwaste}:${POSTGRES_PASSWORD:-foodwaste}@db:5432/${POSTGRES_DB:-foodwaste}
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-dot-env-use-a-long-random-secret-key}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-60}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://localhost:8081}
+      FIRST_ADMIN_NAME: ${FIRST_ADMIN_NAME:-Admin}
+      FIRST_ADMIN_EMAIL: ${FIRST_ADMIN_EMAIL:-admin@example.com}
+      FIRST_ADMIN_PASSWORD: ${FIRST_ADMIN_PASSWORD:-admin12345}
+      OSRM_BASE_URL: ${OSRM_BASE_URL:-https://router.project-osrm.org}
+      # Bind mounts on Windows/macOS don't deliver file-change events: poll so --reload works.
+      WATCHFILES_FORCE_POLLING: "true"
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    volumes:
+      - ./backend:/app # live code -> uvicorn --reload picks up every save
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  admin:
+    profiles: ["admin"]
+    image: node:22-alpine
+    working_dir: /app
+    command: sh -c "npm install && npm run dev"
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:8000}
+      CHOKIDAR_USEPOLLING: "true"
+    ports:
+      - "${ADMIN_PORT:-5173}:5173"
+    volumes:
+      - ./admin:/app
+      - admin_node_modules:/app/node_modules # keep Linux node_modules out of your host folder
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
+  admin_node_modules:

@@ -1,0 +1,33 @@
+# env / secrets
+.env
+.env.*
+!.env.example
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+
+# Trained model files (regenerate with the training endpoint)
+backend/models_store/*
+!backend/models_store/.gitkeep
+
+# Node
+node_modules/
+dist/
+dist-ssr/
+*.log
+
+# Expo
+.expo/
+web-build/

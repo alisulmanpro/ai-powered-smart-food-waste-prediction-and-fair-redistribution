@@ -1,0 +1,8 @@
+# Keep LF endings so shell scripts work inside Docker even when cloned on Windows.
+* text=auto
+*.sh text eol=lf
+*.py text eol=lf
+Dockerfile text eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary

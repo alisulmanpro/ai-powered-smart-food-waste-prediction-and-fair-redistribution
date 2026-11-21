@@ -1,0 +1,25 @@
+# --- Web ---
+fastapi==0.165.0
+uvicorn[standard]==0.54.0
+python-multipart==0.0.34
+
+# --- Database ---
+SQLAlchemy==2.1.9
+alembic==1.20.1
+psycopg[binary]==3.3.9
+
+# --- Config / validation / auth ---
+pydantic-settings==2.16.3
+email-validator==2.4.0
+PyJWT==2.15.1
+argon2-cffi==25.1.0
+
+# --- Data / ML / optimisation ---
+numpy==2.5.5
+pandas==3.1.1
+scikit-learn==1.9.1
+joblib==1.6.0
+ortools==9.15.6755
+
+# --- HTTP client (OSRM routing) ---
+httpx==0.28.1

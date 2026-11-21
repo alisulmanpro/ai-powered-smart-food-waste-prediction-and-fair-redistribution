@@ -1,0 +1,26 @@
+{
+  "name": "food-waste-monorepo",
+  "private": true,
+  "description": "AI-Powered Smart Food Waste Prediction and Fair Redistribution (FYP monorepo)",
+  "scripts": {
+    "setup": "node scripts/setup.mjs",
+    "up": "docker compose up --build",
+    "up:d": "docker compose up -d --build",
+    "up:admin": "docker compose --profile admin up --build",
+    "down": "docker compose --profile admin down",
+    "reset": "docker compose --profile admin down -v",
+    "logs": "docker compose logs -f backend",
+    "ps": "docker compose --profile admin ps",
+    "test": "docker compose exec backend pytest",
+    "lint": "docker compose exec backend ruff check .",
+    "format": "docker compose exec backend ruff format .",
+    "migrate": "docker compose exec backend alembic upgrade head",
+    "makemigration": "docker compose exec backend alembic revision --autogenerate -m",
+    "seed": "docker compose exec backend python -m scripts.seed",
+    "shell": "docker compose exec backend sh",
+    "psql": "docker compose exec db psql -U foodwaste -d foodwaste",
+    "admin:dev": "npm --prefix admin run dev",
+    "mobile:start": "npm --prefix mobile run start",
+    "mobile:android": "npm --prefix mobile run android"
+  }
+}
