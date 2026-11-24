@@ -1,34 +1,40 @@
 import { StatusBar } from 'expo-status-bar'
 import { useEffect, useState } from 'react'
-import { Button, StyleSheet, Text, TextInput, View } from 'react-native'
-import { api, API_URL, getToken, setToken, type Me } from './src/api/client'
+import { ActivityIndicator, StyleSheet, View } from 'react-native'
+import { ApiError, API_URL, api, getToken, setToken, type Me } from './src/api/client'
+import { ErrorBanner } from './src/components/ui'
+import AuthScreen from './src/screens/AuthScreen'
+import HomeScreen from './src/screens/HomeScreen'
 
 export default function App() {
-  const [apiStatus, setApiStatus] = useState('checking...')
+  const [booting, setBooting] = useState(true)
   const [me, setMe] = useState<Me | null>(null)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
+  const [apiOffline, setApiOffline] = useState(false)
 
   useEffect(() => {
-    api
-      .health()
-      .then((h) => setApiStatus(`API ${h.status}, database ${h.database}`))
-      .catch(() => setApiStatus(`API not reachable at ${API_URL}`))
-    getToken().then((t) => {
-      if (t) api.me().then(setMe).catch(() => setToken(null))
-    })
-  }, [])
-
-  async function onLogin() {
-    setError(null)
-    try {
-      await api.login(email.trim(), password)
-      setMe(await api.me())
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed')
+    let cancelled = false
+    async function boot() {
+      api.health().catch(() => {
+        if (!cancelled) setApiOffline(true)
+      })
+      const token = await getToken()
+      if (token) {
+        try {
+          const user = await api.me()
+          if (!cancelled) setMe(user)
+        } catch (err) {
+          if (err instanceof ApiError && (err.status === 401 || err.status === 403)) {
+            await setToken(null)
+          }
+        }
+      }
+      if (!cancelled) setBooting(false)
     }
-  }
+    boot()
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   async function onLogout() {
     await setToken(null)
@@ -36,37 +42,20 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Food Waste Redistribution</Text>
-      <Text style={styles.muted}>{apiStatus}</Text>
-
-      {me ? (
-        <View style={styles.card}>
-          <Text>
-            Signed in as {me.name} ({me.role})
-          </Text>
-          <Button title="Sign out" onPress={onLogout} />
+    <View style={styles.root}>
+      {apiOffline ? (
+        <View style={styles.bannerWrap}>
+          <ErrorBanner message={`Cannot reach the API at ${API_URL}. Check your connection.`} />
         </View>
+      ) : null}
+      {booting ? (
+        <View style={styles.loading}>
+          <ActivityIndicator size="large" color="#2f855a" />
+        </View>
+      ) : me ? (
+        <HomeScreen me={me} onLogout={onLogout} />
       ) : (
-        <View style={styles.card}>
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            autoCapitalize="none"
-            keyboardType="email-address"
-            value={email}
-            onChangeText={setEmail}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-          />
-          {error && <Text style={styles.error}>{error}</Text>}
-          <Button title="Sign in" onPress={onLogin} />
-        </View>
+        <AuthScreen onAuthed={setMe} />
       )}
       <StatusBar style="auto" />
     </View>
@@ -74,10 +63,7 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f7fa', padding: 24, justifyContent: 'center' },
-  title: { fontSize: 22, fontWeight: '600', marginBottom: 8 },
-  muted: { color: '#616e7c', marginBottom: 16 },
-  card: { backgroundColor: '#fff', borderRadius: 12, padding: 16, gap: 12 },
-  input: { borderWidth: 1, borderColor: '#cbd2d9', borderRadius: 8, padding: 10, fontSize: 16 },
-  error: { color: '#c53030' },
+  root: { flex: 1, backgroundColor: '#f5f7fa' },
+  bannerWrap: { paddingTop: 48, paddingHorizontal: 16 },
+  loading: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 })

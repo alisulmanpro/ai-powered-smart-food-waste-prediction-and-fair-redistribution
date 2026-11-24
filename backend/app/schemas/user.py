@@ -63,6 +63,19 @@ class UserOut(BaseModel):
     email: EmailStr
     role: Literal["donor", "recipient", "admin"]
     is_active: bool
+    email_verified: bool
+
+
+class EmailVerifyIn(BaseModel):
+    token: str
+
+
+class ResendVerificationIn(BaseModel):
+    email: EmailStr
+
+
+class MessageOut(BaseModel):
+    message: str
 
 
 class MeOut(UserOut):

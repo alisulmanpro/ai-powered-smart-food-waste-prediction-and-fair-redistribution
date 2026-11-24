@@ -35,6 +35,7 @@ def create_admin(payload: AdminCreate, admin: AdminUser, db: DbSession) -> User:
         email=email,
         password_hash=hash_password(payload.password),
         role=UserRole.admin,
+        email_verified=True,  # created by an existing admin, no email round-trip needed
     )
     db.add(new_admin)
     db.flush()

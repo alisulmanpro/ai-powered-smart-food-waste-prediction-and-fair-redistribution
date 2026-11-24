@@ -29,6 +29,7 @@ class User(Base):
     password_hash: Mapped[str] = mapped_column(Text)
     role: Mapped[UserRole] = mapped_column(Enum(UserRole, name="user_role"))
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, server_default="true")
+    email_verified: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false")
     fcm_token: Mapped[str | None] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 

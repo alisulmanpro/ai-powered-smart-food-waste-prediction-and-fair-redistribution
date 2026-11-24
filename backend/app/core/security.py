@@ -31,3 +31,25 @@ def create_access_token(user_id: int, role: str) -> str:
 def decode_access_token(token: str) -> dict:
     """Raises jwt.PyJWTError if the token is invalid or expired."""
     return jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
+
+
+_EMAIL_VERIFICATION_PURPOSE = "email_verification"
+
+
+def create_verification_token(user_id: int) -> str:
+    """Single-purpose, expiring token embedded in the verification email link."""
+    expire = datetime.now(UTC) + timedelta(minutes=settings.EMAIL_VERIFICATION_EXPIRE_MINUTES)
+    payload = {"sub": str(user_id), "purpose": _EMAIL_VERIFICATION_PURPOSE, "exp": expire}
+    return jwt.encode(payload, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
+
+
+def decode_verification_token(token: str) -> int:
+    """Return the user id for a valid, unexpired verification token.
+
+    Raises jwt.PyJWTError if the token is invalid, expired, or has another purpose
+    (so access tokens can never be used as verification tokens, and vice versa).
+    """
+    payload = jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
+    if payload.get("purpose") != _EMAIL_VERIFICATION_PURPOSE:
+        raise jwt.InvalidTokenError("Not an email verification token")
+    return int(payload["sub"])

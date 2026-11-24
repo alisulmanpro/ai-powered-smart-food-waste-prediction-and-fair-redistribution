@@ -39,6 +39,11 @@ services:
       FIRST_ADMIN_EMAIL: ${FIRST_ADMIN_EMAIL:-admin@example.com}
       FIRST_ADMIN_PASSWORD: ${FIRST_ADMIN_PASSWORD:-admin12345}
       OSRM_BASE_URL: ${OSRM_BASE_URL:-https://router.project-osrm.org}
+      BREVO_API_KEY: ${BREVO_API_KEY:-}
+      BREVO_SENDER_EMAIL: ${BREVO_SENDER_EMAIL:-}
+      BREVO_SENDER_NAME: ${BREVO_SENDER_NAME:-Food Waste Redistribution}
+      PUBLIC_API_URL: ${PUBLIC_API_URL:-http://localhost:8000}
+      EMAIL_VERIFICATION_EXPIRE_MINUTES: ${EMAIL_VERIFICATION_EXPIRE_MINUTES:-1440}
       # Bind mounts on Windows/macOS don't deliver file-change events: poll so --reload works.
       WATCHFILES_FORCE_POLLING: "true"
     ports:

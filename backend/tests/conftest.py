@@ -14,7 +14,7 @@ from sqlalchemy.orm import Session
 
 import app.models  # noqa: F401
 from app.core.config import settings
-from app.core.security import hash_password
+from app.core.security import create_verification_token, hash_password
 from app.db.base import Base
 from app.db.session import get_db
 from app.main import app
@@ -76,10 +76,23 @@ PASSWORD = "password123"
 
 
 def make_user(db: Session, email: str, role: UserRole, name: str = "Test User") -> User:
-    user = User(name=name, email=email, password_hash=hash_password(PASSWORD), role=role)
+    user = User(
+        name=name,
+        email=email,
+        password_hash=hash_password(PASSWORD),
+        role=role,
+        email_verified=True,  # direct DB creation bypasses the email round-trip
+    )
     db.add(user)
     db.commit()
     return user
+
+
+def verify_email_for(client: TestClient, user_id: int) -> None:
+    """Confirm a freshly registered user without sending a real email."""
+    token = create_verification_token(user_id)
+    resp = client.post("/api/v1/auth/verify-email", json={"token": token})
+    assert resp.status_code == 200, resp.text
 
 
 def auth_headers(client: TestClient, email: str, password: str = PASSWORD) -> dict[str, str]:

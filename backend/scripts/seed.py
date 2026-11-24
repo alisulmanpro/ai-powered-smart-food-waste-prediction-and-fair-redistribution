@@ -45,6 +45,7 @@ def seed() -> None:
                     email=admin_email,
                     password_hash=hash_password(settings.FIRST_ADMIN_PASSWORD),
                     role=UserRole.admin,
+                    email_verified=True,
                 )
             )
             print(f"Created first admin: {admin_email}")
