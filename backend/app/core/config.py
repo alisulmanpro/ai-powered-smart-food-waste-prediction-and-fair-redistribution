@@ -21,6 +21,13 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
 
+    # Email verification (Brevo SMTP API)
+    BREVO_API_KEY: str = ""  # empty = emails are skipped (dev/test)
+    BREVO_SENDER_EMAIL: str = ""  # must be a verified sender in Brevo
+    BREVO_SENDER_NAME: str = "Food Waste Redistribution"
+    PUBLIC_API_URL: str = "http://localhost:8000"  # base URL used in verification links
+    EMAIL_VERIFICATION_EXPIRE_MINUTES: int = 1440  # 24 hours
+
     # CORS: comma separated list of allowed origins (admin panel, Expo web, ...)
     CORS_ORIGINS: str = "http://localhost:5173,http://localhost:8081"
 
@@ -41,6 +48,12 @@ class Settings(BaseSettings):
     def validate_for_production(self) -> None:
         if self.ENVIRONMENT == "production" and self.JWT_SECRET == INSECURE_DEFAULT_SECRET:
             raise RuntimeError("Set a strong JWT_SECRET before running in production.")
+        if self.ENVIRONMENT == "production" and not (
+            self.BREVO_API_KEY and self.BREVO_SENDER_EMAIL
+        ):
+            raise RuntimeError(
+                "Set BREVO_API_KEY and BREVO_SENDER_EMAIL before running in production."
+            )
 
 
 settings = Settings()

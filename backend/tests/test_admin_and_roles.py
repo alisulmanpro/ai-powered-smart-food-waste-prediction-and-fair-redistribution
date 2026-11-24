@@ -1,4 +1,4 @@
-from tests.conftest import PASSWORD, auth_headers
+from tests.conftest import PASSWORD, auth_headers, verify_email_for
 
 RECIPIENT_PROFILE = {
     "organisation_name": "Helping Hands",
@@ -15,6 +15,7 @@ def register(client, email, role):
         json={"name": "T", "email": email, "password": PASSWORD, "role": role},
     )
     assert resp.status_code == 201
+    verify_email_for(client, resp.json()["id"])
     return resp.json()
 
 

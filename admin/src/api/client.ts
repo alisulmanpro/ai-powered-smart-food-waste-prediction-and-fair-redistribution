@@ -7,6 +7,7 @@ export type Me = {
   email: string
   role: 'donor' | 'recipient' | 'admin'
   is_active: boolean
+  email_verified: boolean
 }
 
 let accessToken: string | null = localStorage.getItem('access_token')
