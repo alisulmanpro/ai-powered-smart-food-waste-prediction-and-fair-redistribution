@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Data &amp; models</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font:14px/1.5 Inter,system-ui,sans-serif;color:#2b1d17;background:#faf6f1}*{box-sizing:border-box}
+a:focus-visible,input:focus-visible{outline:2px solid #c4452a;outline-offset:2px}
+.app{display:flex;min-height:100vh}.sb{width:236px;background:#2b1d17;color:#f1e6de;padding:20px 14px;display:flex;flex-direction:column;gap:2px;flex-shrink:0}
+.lg{display:flex;gap:10px;align-items:center;padding:0 8px 16px}.lg b{font-size:17px;font-weight:800;letter-spacing:-.02em;color:#fff}.lg i{font-style:normal;color:#ff9a6a}
+.sb h6{margin:14px 0 6px 10px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#bda99c;font-weight:600}
+.sb a{padding:9px 12px;border-radius:9px;color:#e0d1c6;text-decoration:none;font-weight:500}.sb a:hover{background:#3a2820}.sb a.on{background:#4a3128;color:#fff;box-shadow:inset 0 0 0 1px #7a5242}
+.me{margin-top:auto;padding:12px;border-radius:12px;background:#38261e;font-weight:600}.me small{display:block;font-weight:400;color:#bda99c}
+.mn{flex:1;min-width:0}.tb{display:flex;justify-content:space-between;padding:14px 32px;background:#fff;border-bottom:1px solid #eadfd6;color:#6b5b52}.tb b{color:#2b1d17}
+.ct{padding:28px 32px;max-width:1180px}h1{margin:0;font-size:26px;letter-spacing:-.025em}.sub{margin:4px 0 22px;color:#6b5b52}.hd{display:flex;justify-content:space-between;align-items:flex-start}
+.card{background:#fff;border:1px solid #eadfd6;border-radius:14px;padding:20px;box-shadow:0 1px 2px rgba(43,29,23,.04)}.card h3{margin:0 0 4px;font-size:15px}.s{margin:0 0 14px;color:#6b5b52;font-size:13px}
+.g{display:grid;gap:16px;margin-bottom:16px}.g4{grid-template-columns:repeat(4,1fr)}.g2{grid-template-columns:2fr 1fr}.g11{grid-template-columns:1fr 1fr}
+.k b{display:block;font-size:28px;letter-spacing:-.03em;margin-top:6px}.k span{color:#6b5b52;font-size:13px}.k em{font-style:normal;font-size:12px;font-weight:600;color:#1b6b42;background:#e4f4ea;padding:2px 8px;border-radius:99px;margin-left:6px}
+.btn{display:inline-block;padding:9px 16px;border-radius:10px;background:#c4452a;color:#fff;font-weight:600;text-decoration:none;border:1px solid #c4452a}.btn.o{background:#fff;color:#2b1d17;border-color:#d9cabf}.btn.d{background:#fff;color:#a3281c;border-color:#e8b9b3}
+.pl{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:600}.ok{background:#e4f4ea;color:#1b6b42}.wn{background:#fdf0d9;color:#8a5200}.bd{background:#fde9e6;color:#a3281c}
+table{width:100%;border-collapse:collapse}th{text-align:left;font-size:12px;color:#6b5b52;font-weight:600;padding:8px 12px;border-bottom:1px solid #eadfd6}td{padding:13px 12px;border-bottom:1px solid #f1e8df}tr:last-child td{border:0}
+.mt{height:8px;border-radius:9px;background:#f3e6dc;overflow:hidden;margin:6px 0 14px}.mt i{display:block;height:100%;background:#c4452a;border-radius:9px}.ml{display:flex;justify-content:space-between}.ml span{color:#6b5b52}
+label{display:block;font-size:13px;font-weight:600;margin:14px 0 6px}input{width:100%;padding:11px 12px;border:1px solid #d9cabf;border-radius:10px;font:inherit}.col{display:grid;gap:10px}.note{font-size:12px;color:#6b5b52;margin-top:18px}
+</style>
+
+</head>
+<body>
+
+
+<div class="app"><div class="sb"><div class="lg"><svg width="38" height="38" viewBox="0 0 128 128" aria-hidden="true"><path d="M20.7 89A50 50 0 1 1 111 81.1" fill="none" stroke="#f59a68" stroke-width="6" stroke-linecap="round"/><path d="M64 108V62" stroke="#e0603a" stroke-width="5" stroke-linecap="round"/><path d="M64 74C64 58 54 47 36 45C36 64 46 74 64 74Z" fill="#f8b186"/><path d="M64 66C64 46 74 34 94 32C94 54 84 66 64 66Z" fill="#e0603a"/></svg><b>Food<i>Share</i></b></div><h6>Overview</h6><a href="02-dashboard.html">Dashboard</a><h6>Operations</h6><a href="03-verify-users.html">Verify users</a><a href="05-allocations.html">Allocations</a><a href="08-collections.html">Collections</a><h6>Intelligence</h6><a href="09-data-models.html" class="on">Data &amp; models</a><h6>System</h6><a href="12-settings.html">Settings</a><a href="13-audit-log.html">Audit log</a><div class="me">Admin<small>Coordinator</small></div></div><div class="mn"><div class="tb"><span>Admin / <b>Data &amp; models</b></span><span>Sample data</span></div><div class="ct"><div class="hd"><div><h1>Data &amp; models</h1><p class="sub">Compare every model against the simple average baseline.</p></div><div><a class="btn" href="10-upload-csv.html">Upload CSV</a></div></div><div class="card"><h3>Model comparison</h3><p class="s">Sample numbers. Lower MAE and RMSE is better.</p><table><tr><th>Version</th><th>Algorithm</th><th>MAE</th><th>RMSE</th><th>Error</th><th>Status</th></tr><tr><td>v4</td><td><b>Gradient Boosting</b></td><td>3.0</td><td>4.2</td><td style="width:180px"><div class="mt" style="margin:0"><i style="width:60%"></i></div></td><td><span class="pl ok">Current</span></td></tr><tr><td>v3</td><td><b>Random Forest</b></td><td>3.1</td><td>4.0</td><td style="width:180px"><div class="mt" style="margin:0"><i style="width:62%"></i></div></td><td><span class="pl in" style="background:#fdeee6;color:#a3361d">Trained</span></td></tr><tr><td>v2</td><td><b>Linear Regression</b></td><td>4.2</td><td>5.5</td><td style="width:180px"><div class="mt" style="margin:0"><i style="width:84%"></i></div></td><td><span class="pl in" style="background:#fdeee6;color:#a3361d">Trained</span></td></tr><tr><td>v1</td><td><b>Baseline (average)</b></td><td>5.0</td><td>6.5</td><td style="width:180px"><div class="mt" style="margin:0"><i style="width:100%"></i></div></td><td><span class="pl wn">Baseline</span></td></tr></table></div><div class="g g11" style="margin-top:16px"><div class="card" style="border:2px dashed #d9cabf;text-align:center;padding:36px"><h3>Drop your CSV here</h3><p class="s" style="margin:0">date, business, food type, prepared, sold, left over, event flag</p></div><div class="card"><h3>Last validation</h3><p class="s">historical_data.csv</p><span class="pl ok">1,184 rows accepted</span> <span class="pl bd">6 rows rejected</span></div></div><p class="note">Sample data for illustration. Predictions and route times are estimates; this system is decision support only.</p></div></div></div>
+
+</body>
+</html>
